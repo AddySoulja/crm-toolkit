@@ -1,7 +1,11 @@
 import apiSlice from "./apiSlice";
 
-const API_URL = `http://localhost:5000/customers`;
-
+let API_URL;
+if (process.env.NODE_ENV === "production") {
+  API_URL = `http://ec2-18-217-180-76.us-east-2.compute.amazonaws.com:5000/customers`;
+} else {
+  API_URL = `http://localhost:5000/customers`;
+}
 const customersApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     registerCustomer: builder.mutation({

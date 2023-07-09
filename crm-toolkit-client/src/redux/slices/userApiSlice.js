@@ -1,6 +1,10 @@
 import apiSlice from "./apiSlice";
-
-const API_URL = `http://localhost:5000/user`;
+let API_URL;
+if (process.env.NODE_ENV === "production") {
+  API_URL = `http://ec2-18-217-180-76.us-east-2.compute.amazonaws.com:5000/user`;
+} else {
+  API_URL = `http://localhost:5000/user`;
+}
 
 const userApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
