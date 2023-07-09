@@ -1,22 +1,32 @@
-const Customer = require("../models/customerModel");
-
+const { v4: genCustomerId } = require("uuid");
+const CustomersList = require("../models/customersListSchema");
 const registerCustomer = async (req, res) => {
   try {
-    const { name, email, phone, address, info } = req.body;
-    const customer = await Customer.create({
+    const user = req.user;
+    const { name, email, phone, address, status } = req.body;
+    const customersList = await CustomersList.findById(user.email);
+    customersList.list.push({
+      id: genCustomerId(),
       name,
       email,
       phone,
       address,
-      info,
+      status,
     });
-    console.log(customer);
-    if (customer) {
+    const newList = await CustomersList.findByIdAndUpdate(
+      { _id: user.email },
+      customersList,
+      {
+        returnDocument: "after",
+        new: true,
+      }
+    );
+    if (newList) {
       return res.status(201).json({
         ok: true,
         data: {
-          customer,
-          message: "Customer created successfully.",
+          customersList: newList,
+          message: "Customer added successfully.",
         },
       });
     }

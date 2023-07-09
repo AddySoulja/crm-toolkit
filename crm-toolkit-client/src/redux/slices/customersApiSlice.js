@@ -1,10 +1,10 @@
 import apiSlice from "./apiSlice";
 
-const API_URL = `http://localhost:5000/client`;
+const API_URL = `http://localhost:5000/customers`;
 
-const userApiSlice = apiSlice.injectEndpoints({
+const customersApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    registerClient: builder.mutation({
+    registerCustomer: builder.mutation({
       query: (data) => ({
         url: `${API_URL}/register`,
         method: "POST",
@@ -12,22 +12,22 @@ const userApiSlice = apiSlice.injectEndpoints({
         body: data.formData,
       }),
     }),
-    getClient: builder.mutation({
+    getCustomer: builder.mutation({
       query: (data) => ({
-        url: `${API_URL}/get`,
+        url: `${API_URL}/:${data.id}`,
         method: "GET",
         headers: { Authorization: `Bearer jwt=${data.cookie.jwt}` },
         body: data.clientId,
       }),
     }),
-    getAllClients: builder.mutation({
+    getAllCustomers: builder.mutation({
       query: (cookie) => ({
         url: `${API_URL}/all`,
         method: "GET",
         headers: { Authorization: `Bearer jwt=${cookie.jwt}` },
       }),
     }),
-    updateClient: builder.mutation({
+    updateCustomer: builder.mutation({
       query: (data) => ({
         url: `${API_URL}/update`,
         method: "POST",
@@ -35,7 +35,7 @@ const userApiSlice = apiSlice.injectEndpoints({
         body: data.clientId,
       }),
     }),
-    deleteClient: builder.mutation({
+    deleteCustomer: builder.mutation({
       query: (data) => ({
         url: `${API_URL}/delete`,
         method: "POST",
@@ -47,9 +47,9 @@ const userApiSlice = apiSlice.injectEndpoints({
 });
 
 export const {
-  useRegisterClientMutation,
-  useGetAllClientsMutation,
-  useGetClientMutation,
-  useUpdateClientMutation,
-  useDeleteClientMutation,
-} = userApiSlice;
+  useRegisterCustomerMutation,
+  useGetCustomerMutation,
+  useGetAllCustomersMutation,
+  useUpdateCustomerMutation,
+  useDeleteCustomerMutation,
+} = customersApiSlice;

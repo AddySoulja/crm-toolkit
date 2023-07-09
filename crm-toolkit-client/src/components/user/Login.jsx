@@ -11,8 +11,10 @@ import { useLoginMutation } from "../../redux/slices/userApiSlice";
 import { setCredentials } from "../../redux/slices/authReducer";
 import Loader from "../common/loader/Loader";
 import { loginFormat } from "../../utils/formats";
+import { setCustomers } from "../../redux/slices/customersListReducer";
 
 const Login = () => {
+  const { customers } = useSelector((state) => state.customers);
   const { userInfo } = useSelector((state) => state.auth);
   const [form, setForm] = useState(loginFormat);
   const [_, setCookie] = useCookies(["jwt"]);
@@ -30,9 +32,10 @@ const Login = () => {
     formData.append("password", password);
     try {
       const res = await login(formData).unwrap();
-      const user = res.data.user;
+      const { user, customersList } = res.data;
       setCookie("jwt", user.token);
       dispatch(setCredentials(user));
+      dispatch(setCustomers(customersList.list));
       navigate("/");
       setForm(loginFormat);
     } catch (e) {

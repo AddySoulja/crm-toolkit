@@ -14,13 +14,13 @@ configPassportJwt(passport);
 
 //Routers
 const userRouter = require("./routes/userRoutes");
-const customerRouter = require("./routes/customerRoutes");
+const customersRoute = require("./routes/customersRoutes");
 //Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 app.use("/user", userRouter);
-app.use("/client", customerRouter);
+app.use("/customers", customersRoute);
 
 app.listen(port, () => console.log("Server running at port: ", port));

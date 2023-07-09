@@ -9,6 +9,7 @@ import { useRegisterMutation } from "../../redux/slices/userApiSlice";
 import { setCredentials } from "../../redux/slices/authReducer";
 import Loader from "../common/loader/Loader";
 import { registerFormat } from "../../utils/formats";
+import { setCustomers } from "../../redux/slices/customersListReducer";
 
 const Register = () => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -49,10 +50,10 @@ const Register = () => {
       formData.append("photo", photo);
       formData.append("password", password);
       const res = await register(formData).unwrap();
-      const user = res.data.user;
-      console.log(user);
+      const { user, customersList } = res.data;
       setCookie("jwt", user.token);
       dispatch(setCredentials(user));
+      dispatch(setCustomers(customersList.list));
       navigate("/");
       setForm(registerFormat);
     } catch (e) {

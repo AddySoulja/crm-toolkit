@@ -215,7 +215,7 @@ EnhancedTableToolbar.propTypes = {
 };
 
 export default function TableComponent() {
-  const { clientsInfo } = useSelector((state) => state.clients);
+  const { list } = useSelector((state) => state.customers);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
   const [selected, setSelected] = React.useState([]);
@@ -223,26 +223,15 @@ export default function TableComponent() {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-  let rows;
-  rows = [
+  const rows = list.map((client) =>
     createData(
-      "Aditya kumar",
-      "adityadhanraj1357@gmail.com",
-      9835699348,
-      "Patna, Bihar.",
-      "In progress"
-    ),
-  ];
-
-  // rows = clientsInfo.map((client) =>
-  //   createData(
-  //     client.name,
-  //     client.email,
-  //     client.phone,
-  //     client.address,
-  //     client.status
-  //   )
-  // );
+      client.name,
+      client.email,
+      client.phone,
+      client.address,
+      client.status
+    )
+  );
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -304,7 +293,7 @@ export default function TableComponent() {
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
-    [order, orderBy, page, rowsPerPage]
+    [order, orderBy, page, rowsPerPage, rows]
   );
 
   return (
@@ -337,7 +326,7 @@ export default function TableComponent() {
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
-                    key={row.name}
+                    key={row.id}
                     selected={isItemSelected}
                     sx={{ cursor: "pointer" }}
                   >

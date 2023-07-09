@@ -1,3 +1,4 @@
+const CustomersList = require("../models/customersListSchema");
 const User = require("../models/userModel");
 const generateToken = require("../utils/generateToken");
 
@@ -9,6 +10,10 @@ const registerUser = async (req, res) => {
       email,
       password,
     });
+    const customersList = await CustomersList.create({
+      _id: user.email,
+      list: [],
+    });
     return res.status(201).json({
       ok: true,
       data: {
@@ -19,6 +24,7 @@ const registerUser = async (req, res) => {
           photo: user.photo,
           token: generateToken(user._id),
         },
+        customersList,
         message: "Registered successfully.",
       },
     });
@@ -32,6 +38,7 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (user && (await user.matchPassword(password))) {
+      const customersList = await CustomersList.findById(user.email);
       return res.status(200).json({
         ok: true,
         data: {
@@ -42,6 +49,7 @@ const loginUser = async (req, res) => {
             photo: user.photo,
             token: generateToken(user._id),
           },
+          customersList,
           message: "Logged in successfully.",
         },
       });

@@ -13,7 +13,7 @@ const loginFormat = {
 const clientFormat = {
   name: "",
   email: "",
-  phone: null,
+  phone: "",
   address: "",
   status: "",
 };

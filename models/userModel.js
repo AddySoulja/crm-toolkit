@@ -8,6 +8,7 @@ const userSchema = mongoose.Schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     photo: { type: Buffer },
+    customersListId: { type: String },
   },
   { collection: "Users" },
   { timestamps: true }

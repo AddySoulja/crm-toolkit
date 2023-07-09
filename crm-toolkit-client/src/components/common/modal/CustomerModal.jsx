@@ -6,11 +6,11 @@ import Fade from "@mui/material/Fade";
 import Typography from "@mui/material/Typography";
 import { Button, TextField } from "@mui/material";
 import { clientFormat } from "../../../utils/formats";
-import { useRegisterClientMutation } from "../../../redux/slices/clientApiSlice";
 import { toast } from "react-toastify";
 import { useCookies } from "react-cookie";
 import { useDispatch, useSelector } from "react-redux";
-import { setClients } from "../../../redux/slices/clientReducer";
+import { useRegisterCustomerMutation } from "../../../redux/slices/customersApiSlice";
+import { setCustomers } from "../../../redux/slices/customersListReducer";
 
 const style = {
   position: "absolute",
@@ -25,11 +25,11 @@ const style = {
 };
 
 export default function CustomerModal({ modalOpen, handleModalClose }) {
-  const { clientsInfo } = useSelector((state) => state.clients);
+  const { customers } = useSelector((state) => state.customers);
   const [cookie] = useCookies(["jwt"]);
   const [form, setForm] = useState(clientFormat);
-  const [register, { isLoading }] = useRegisterClientMutation();
 
+  const [registerCustomer, { isLoading }] = useRegisterCustomerMutation();
   const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
@@ -45,12 +45,11 @@ export default function CustomerModal({ modalOpen, handleModalClose }) {
       formData.append("phone", phone);
       formData.append("address", address);
       formData.append("status", status);
-      const res = await register({ formData, cookie }).unwrap();
-      const client = res.data.customer;
-      console.log("Client: ", client);
-      console.log("All clients: ", clientsInfo);
-      dispatch(setClients([...clientsInfo, client]));
+      const res = await registerCustomer({ formData, cookie }).unwrap();
+      const customersList = res.data.customersList.list;
+      dispatch(setCustomers(customersList));
       setForm(clientFormat);
+      handleModalClose();
       return toast.success(res.data.message);
     } catch (e) {
       return toast.error(e?.data?.message || e.message);

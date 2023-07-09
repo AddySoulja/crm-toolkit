@@ -1,28 +1,27 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Box, Button, Tooltip, Typography } from "@mui/material";
 import { useCookies } from "react-cookie";
 import AddIcon from "@mui/icons-material/Add";
 import NavDrawer from "../common/nav-drawer/NavDrawer";
 import TableComponent from "../common/table/TableComponent";
 import CustomerModal from "../common/modal/CustomerModal";
-import { useGetAllClientsMutation } from "../../redux/slices/clientApiSlice";
-import { setClients } from "../../redux/slices/clientReducer";
+
+import { useGetAllCustomersMutation } from "../../redux/slices/customersApiSlice";
 
 const Dashboard = () => {
   const [cookie] = useCookies(["jwt"]);
   const [modalOpen, setModalOpen] = useState(false);
   const dispatch = useDispatch();
-  const [getClients, { isLoading }] = useGetAllClientsMutation();
+  const [getCustomers, { isLoading }] = useGetAllCustomersMutation();
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
 
   const fetchClients = useCallback(async () => {
-    const res = await getClients(cookie);
-    const clients = res.data.customersList;
-    console.log("GOt clients; ", clients);
-    dispatch(setClients(clients));
-  }, [cookie, dispatch, getClients]);
+    const res = await getCustomers(cookie);
+    const customers = res;
+    // dispatch(setCustomers(customers));
+  }, [cookie, getCustomers]);
 
   // useEffect(() => {
   //   fetchClients();
