@@ -1,6 +1,9 @@
 const router = require("express").Router();
 const multer = require("multer");
-const { registerCustomer } = require("../controllers/customerControllers");
+const {
+  registerCustomer,
+  getAllCustomers,
+} = require("../controllers/customerControllers");
 const authenticate = require("../utils/authenticate");
 
 const upload = multer({ storage: multer.memoryStorage() });
@@ -12,4 +15,5 @@ router.post(
   registerCustomer
 );
 
+router.get("/all", authenticate, getAllCustomers);
 module.exports = router;

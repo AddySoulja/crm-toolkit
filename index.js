@@ -3,6 +3,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 const express = require("express");
 const passport = require("passport");
+const cors = require("cors");
 const connect = require("./configs/mongoDb");
 const configPassportJwt = require("./configs/passportJWT");
 
@@ -15,10 +16,11 @@ configPassportJwt(passport);
 const userRouter = require("./routes/userRoutes");
 const customerRouter = require("./routes/customerRoutes");
 //Middleware
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 app.use("/user", userRouter);
-app.use("/customer", customerRouter);
+app.use("/client", customerRouter);
 
 app.listen(port, () => console.log("Server running at port: ", port));

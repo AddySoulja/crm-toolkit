@@ -24,11 +24,10 @@ userSchema.pre("save", function (next) {
   });
 });
 
-//custom method for user schema to match passwords while logging
+//custom method for user schema to match passwords
 userSchema.methods.matchPassword = function (password) {
   return bcrypt.compare(password, this.password);
 };
 
 const User = mongoose.model("User", userSchema);
-
 module.exports = User;
