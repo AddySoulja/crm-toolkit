@@ -7,7 +7,7 @@ import { useCookies } from "react-cookie";
 import "react-toastify/dist/ReactToastify.css";
 import { useRegisterMutation } from "../../redux/slices/userApiSlice";
 import { setCredentials } from "../../redux/slices/authReducer";
-import Loader from "../common/loader/Loader";
+import Loader from "../loader/Loader";
 import { registerFormat } from "../../utils/formats";
 import { setCustomers } from "../../redux/slices/customersListReducer";
 

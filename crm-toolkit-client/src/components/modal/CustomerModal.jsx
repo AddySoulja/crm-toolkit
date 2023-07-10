@@ -5,12 +5,12 @@ import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Typography from "@mui/material/Typography";
 import { Button, TextField } from "@mui/material";
-import { clientFormat } from "../../../utils/formats";
+import { clientFormat } from "../../utils/formats";
 import { toast } from "react-toastify";
 import { useCookies } from "react-cookie";
 import { useDispatch, useSelector } from "react-redux";
-import { useRegisterCustomerMutation } from "../../../redux/slices/customersApiSlice";
-import { setCustomers } from "../../../redux/slices/customersListReducer";
+import { useRegisterCustomerMutation } from "../../redux/slices/customersApiSlice";
+import { setCustomers } from "../../redux/slices/customersListReducer";
 
 const style = {
   position: "absolute",
@@ -24,7 +24,7 @@ const style = {
   p: 4,
 };
 
-export default function CustomerModal({ modalOpen, handleModalClose }) {
+export default function CustomerModal({ open, handleModalClose }) {
   const { customers } = useSelector((state) => state.customers);
   const [cookie] = useCookies(["jwt"]);
   const [form, setForm] = useState(clientFormat);
@@ -66,7 +66,7 @@ export default function CustomerModal({ modalOpen, handleModalClose }) {
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
-        open={modalOpen}
+        open={open}
         onClose={handleModalClose}
         closeAfterTransition
         slots={{ backdrop: Backdrop }}
@@ -76,7 +76,7 @@ export default function CustomerModal({ modalOpen, handleModalClose }) {
           },
         }}
       >
-        <Fade in={modalOpen}>
+        <Fade in={open}>
           <Box sx={style}>
             <Typography
               id="transition-modal-title"

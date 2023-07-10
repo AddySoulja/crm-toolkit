@@ -10,7 +10,7 @@ import store from "./redux/store";
 import App from "./App";
 import { Provider } from "react-redux";
 import { CookiesProvider } from "react-cookie";
-import ProtectedRoute from "./components/common/ProtectedRoute";
+import ProtectedRoute from "./components/private/ProtectedRoute";
 import Profile from "./components/user/Profile";
 import Login from "./components/user/Login";
 import Register from "./components/user/Register";
