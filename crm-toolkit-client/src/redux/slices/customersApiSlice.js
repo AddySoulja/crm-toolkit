@@ -36,7 +36,7 @@ const customersApiSlice = apiSlice.injectEndpoints({
         url: `${API_URL}/update`,
         method: "POST",
         headers: { Authorization: `Bearer jwt=${data.cookie.jwt}` },
-        body: data.clientId,
+        body: data.formData,
       }),
     }),
     deleteCustomer: builder.mutation({
@@ -44,7 +44,7 @@ const customersApiSlice = apiSlice.injectEndpoints({
         url: `${API_URL}/delete`,
         method: "POST",
         headers: { Authorization: `Bearer jwt=${data.cookie.jwt}` },
-        body: data.clientId,
+        body: data.customers,
       }),
     }),
   }),

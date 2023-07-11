@@ -21,16 +21,20 @@ import Switch from "@mui/material/Switch";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CustomerDrawer from "../customer-drawer/CustomerDrawer";
-
-function createData(name, email, phone, address, status) {
+import { toast } from "react-toastify";
+import { useDeleteCustomerMutation } from "../../redux/slices/customersApiSlice";
+import { useCookies } from "react-cookie";
+import { setCustomers } from "../../redux/slices/customersListReducer";
+function createData(name, email, phone, address, status, _id) {
   return {
     name,
     email,
     phone,
     address,
     status,
+    _id,
   };
 }
 
@@ -158,7 +162,23 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected } = props;
+  const [cookie] = useCookies(["jwt"]);
+  const { selected, setSelected } = props;
+  const dispatch = useDispatch();
+  const numSelected = selected.length;
+
+  const [deleteCustomer, { isLoading }] = useDeleteCustomerMutation();
+  const handleDeleteCustomers = async () => {
+    try {
+      const res = await deleteCustomer({ customers: selected, cookie });
+      const { customersList, message } = res.data.data;
+      dispatch(setCustomers(customersList.list));
+      toast.success(message);
+      setSelected([]);
+    } catch (error) {
+      toast.error(error?.message || error);
+    }
+  };
 
   return (
     <Toolbar
@@ -196,7 +216,7 @@ function EnhancedTableToolbar(props) {
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={handleDeleteCustomers}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
@@ -212,7 +232,8 @@ function EnhancedTableToolbar(props) {
 }
 
 EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
+  selected: PropTypes.array.isRequired,
+  setSelected: PropTypes.func.isRequired,
 };
 
 export default function TableComponent() {
@@ -229,8 +250,12 @@ export default function TableComponent() {
   const handleCustomerDrawer = (customer) => {
     setOpen(true);
     setInDrawer(customer);
-    console.log("cust id: ", inDrawer);
   };
+
+  React.useEffect(() => {
+    if (!inDrawer) return;
+    setInDrawer(...list.filter((item) => item._id === inDrawer._id));
+  }, [inDrawer, list]);
 
   const rows = list.map((client) =>
     createData(
@@ -238,7 +263,8 @@ export default function TableComponent() {
       client.email,
       client.phone,
       client.address,
-      client.status
+      client.status,
+      client._id
     )
   );
 
@@ -250,19 +276,20 @@ export default function TableComponent() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.name);
+      const newSelected = rows.map((n) => n._id);
       setSelected(newSelected);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, id) => {
+    event.stopPropagation();
+    const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -290,7 +317,7 @@ export default function TableComponent() {
     setDense(event.target.checked);
   };
 
-  const isSelected = (name) => selected.indexOf(name) !== -1;
+  const isSelected = (id) => selected.indexOf(id) !== -1;
 
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -308,7 +335,7 @@ export default function TableComponent() {
     <>
       <Box sx={{ width: "auto" }}>
         <Paper sx={{ width: "100%", mb: 2 }}>
-          <EnhancedTableToolbar numSelected={selected.length} />
+          <EnhancedTableToolbar selected={selected} setSelected={setSelected} />
           <TableContainer>
             <Table
               sx={{ minWidth: 750 }}
@@ -325,23 +352,23 @@ export default function TableComponent() {
               />
               <TableBody>
                 {visibleRows.map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row._id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      // onClick={() => handleCustomerDrawer(row)}
+                      onClick={() => handleCustomerDrawer(row)}
                       aria-checked={isItemSelected}
                       role="checkbox"
                       tabIndex={-1}
-                      key={row.id}
+                      key={row.email}
                       selected={isItemSelected}
                       sx={{ cursor: "pointer" }}
                     >
                       <TableCell padding="checkbox">
                         <Checkbox
-                          onClick={(event) => handleClick(event, row.name)}
+                          onClick={(event) => handleClick(event, row._id)}
                           color="primary"
                           checked={isItemSelected}
                           inputProps={{
@@ -391,7 +418,7 @@ export default function TableComponent() {
           label="Dense padding"
         />
       </Box>
-      <CustomerDrawer open={open} />
+      <CustomerDrawer open={open} inDrawer={inDrawer} handleDrawer={setOpen} />
     </>
   );
 }

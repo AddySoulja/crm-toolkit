@@ -1,0 +1,136 @@
+.customer-drawer {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+}
+
+.customer-drawer-header-wrapper {
+    height: 210px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #00000033;
+}
+.customer-drawer-header {
+    display: flex;
+}
+.customer-drawer-profile {
+    background-color: rgba(36, 7, 7, 0.295);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 55px;
+    height: 55px;
+    padding: 41px 42px 40px 42px;
+    border-radius: 100px;
+    font-size: 30px;
+}
+
+.customer-drawer-info {
+    padding: 10px;
+}
+.customer-drawer-name {
+    font-family: 'Lato';
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 53px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+
+.customer-drawer-email-group {
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 8px
+}
+
+.customer-drawer-email-group .email-group{
+    font-family: 'Lato';
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 38px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #717D96;
+    
+}
+
+.divider {
+    height: 25px;
+    width: 1px;
+    background-color: #717D96;
+}
+
+.customer-drawer-address {
+    font-family: 'Lato';
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 38px;
+    letter-spacing: 0em;
+    text-align: left;
+    
+    color: #717D96;
+}
+
+.customer-drawer-btn-group {
+    display: flex;
+    justify-content: space-evenly;
+
+    padding: 8px;
+}
+
+.customer-drawer-btn-group Button {
+    width: 165px;
+    height: 36px;
+
+}
+
+
+.customer-drawer-body-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.customer-drawer-body-main {
+    height: 310px;
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+}
+
+.customer-drawer-body-main-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 10px 10px;
+    border-bottom: 1px solid #00000033;
+
+}
+
+.customer-drawer-body-main-header .customer-drawer-body-main-header-text{
+    font-family: "Lato";
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 33px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+.customer-drawer-body-profile {
+    background-color: rgba(11, 29, 194, 0.295);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 100px;
+    font-size: 30px;
+}
+
+.customer-drawer-body-content {
+    padding: 10px;
+}

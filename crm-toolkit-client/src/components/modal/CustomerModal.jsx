@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -9,7 +9,10 @@ import { clientFormat } from "../../utils/formats";
 import { toast } from "react-toastify";
 import { useCookies } from "react-cookie";
 import { useDispatch, useSelector } from "react-redux";
-import { useRegisterCustomerMutation } from "../../redux/slices/customersApiSlice";
+import {
+  useRegisterCustomerMutation,
+  useUpdateCustomerMutation,
+} from "../../redux/slices/customersApiSlice";
 import { setCustomers } from "../../redux/slices/customersListReducer";
 
 const style = {
@@ -24,18 +27,33 @@ const style = {
   p: 4,
 };
 
-export default function CustomerModal({ open, handleModalClose }) {
-  const { customers } = useSelector((state) => state.customers);
+export default function CustomerModal({
+  open,
+  handleModalClose,
+  edit,
+  customer,
+}) {
   const [cookie] = useCookies(["jwt"]);
   const [form, setForm] = useState(clientFormat);
-
   const [registerCustomer, { isLoading }] = useRegisterCustomerMutation();
+  const [updateCustomer] = useUpdateCustomerMutation();
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (edit && customer) {
+      setForm({
+        name: customer.name,
+        email: customer.email,
+        phone: customer.phone,
+        address: customer.address,
+        _id: customer._id,
+      });
+    }
+  }, [edit, customer]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    const { name, email, phone, address, status } = form;
+    const { name, email, phone, address, status, _id } = form;
     if (name === "" || email === "") {
       return toast.warn("Invalid client details!");
     }
@@ -45,9 +63,16 @@ export default function CustomerModal({ open, handleModalClose }) {
       formData.append("phone", phone);
       formData.append("address", address);
       formData.append("status", status);
-      const res = await registerCustomer({ formData, cookie }).unwrap();
-      const customersList = res.data.customersList.list;
-      dispatch(setCustomers(customersList));
+      let res, list;
+      if (edit && customer) {
+        formData.append("_id", _id);
+        res = await updateCustomer({ formData, cookie }).unwrap();
+        list = res.data.customersList.list;
+      } else {
+        res = await registerCustomer({ formData, cookie }).unwrap();
+        list = res.data.customersList.list;
+      }
+      dispatch(setCustomers(list));
       setForm(clientFormat);
       handleModalClose();
       return toast.success(res.data.message);
@@ -89,7 +114,7 @@ export default function CustomerModal({ open, handleModalClose }) {
                 alignItems: "center",
               }}
             >
-              Register a new client
+              {edit ? `Edit customer details` : `Register a customer`}
             </Typography>
 
             <form
@@ -160,7 +185,7 @@ export default function CustomerModal({ open, handleModalClose }) {
                   },
                 }}
               >
-                Register client
+                {edit ? `Update` : `Register`}
               </Button>
             </form>
           </Box>
